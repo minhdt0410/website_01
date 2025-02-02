@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body onload="loadingg()">
+<div class="container-scroller">
+    <!--_navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}">
+    </div>
+    <!-- _navbar -->
+    <div class="container-fluid page-body-wrapper">
+        <!--_sidebar-->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+        <!--_sidebar-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <form th:action="@{/khachHang/save}" method="post" enctype="multipart/form-data" id="myForm">
+                    <div class="row">
+                        <!-- Phần thông tin bên trái -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <h5>Thông tin khách hàng</h5>
+                                <div class="mb-3">
+                                    <label for="customerCode" class="form-label">Tên khách hàng</label>
+                                    <input type="text" id="customerCode" name="hoTen" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input type="number" id="phone" name="soDienThoai" class="form-control" required
+                                           pattern="\d{10}" title="Vui lòng nhập đúng 10 số">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Ngày sinh</label>
+                                    <input type="date" id="ngaySinh" name="ngaySinh" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Giới tính</label>
+                                    <select id="gender" name="gioiTinh" class="form-select">
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phần thông tin bên phải -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <h5>Thông tin địa chỉ</h5>
+                                <div class="mb-3">
+                                    <label for="province" class="form-label">Tỉnh/ Thành phố</label>
+                                    <select id="province" onchange="loadDistricts(this.value)" name="thanhPho" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="district" class="form-label">Quận/ Huyện</label>
+                                    <select id="district" onchange="loadWards(this.value)" name="huyen" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ward" class="form-label">Phường/ Xã</label>
+                                    <select id="ward" name="xa" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addressDetails" class="form-label">Địa chỉ chi tiết</label>
+                                    <input type="text" id="addressDetails" name="diaChi" class="form-control"
+                                           placeholder="Số nhà, đường..." required>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="checkValidate(event)">Lưu</button>
+                    <a href="/admin/khachhang" class="btn btn-secondary">Hủy</a>
+                </form>
+                <span id="error" style="color: red"></span>
+            </div>
+            <!--footer-->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+            <!--footer-->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function loadingg() {
+            loadProvinces();
+        }
+
+        function loadProvinces() {
+            $.ajax({
+                url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province',
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                },
+                success: function (data) {
+                    console.log(data)
+                    let provinceSelect = document.getElementById('province');
+                    provinceSelect.innerHTML = '<option value="">Chọn tỉnh/thành phố</option>';
+
+                    data.data.forEach(function (province) {
+                        let option = document.createElement('option');
+                        option.value = province.ProvinceName;
+                        option.setAttribute("data-id", province.ProvinceID)
+                        option.text = province.ProvinceName;
+                        provinceSelect.add(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching provinces:', error);
+                }
+            });
+        }
+
+        function loadDistricts(province) {
+            let option = document.querySelector(`#province option[value="${province}"]`).getAttribute("data-id");
+            let districtSelect = document.getElementById('district');
+            districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+            document.getElementById('ward').innerHTML = '<option value="">Chọn phường/xã</option>';
+            if (option) {
+                return fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/district', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                    },
+                    body: JSON.stringify({"province_id": parseInt(option)})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.data.forEach(district => {
+                            let option = document.createElement('option');
+                            option.value = district.DistrictName;
+                            option.setAttribute("data-id", district.DistrictID)
+                            option.text = district.DistrictName;
+                            districtSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching districts:', error));
+            } else {
+                return Promise.resolve();
+            }
+        }
+
+        function loadWards(district) {
+            let option = document.querySelector(`#district option[value="${district}"]`).getAttribute("data-id");
+            let wardSelect = document.getElementById('ward');
+            wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+
+            if (option) {
+                return fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/ward', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                    },
+                    body: JSON.stringify({"district_id": parseInt(option)})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        data.data.forEach(ward => {
+                            let option = document.createElement('option');
+                            option.value = ward.WardName;
+                            option.setAttribute("data-id", ward.WardCode)
+                            option.text = ward.WardName;
+                            wardSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching wards:', error));
+            } else {
+                return Promise.resolve();
+            }
+        }
+
+        function checkValidate(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('myForm');
+            const error = document.getElementById("error");
+            const formData = new FormData(form);
+            let dataCheck = {};
+
+            formData.forEach((value, key) => {
+                dataCheck[key] = value.trim(); // Trim để loại bỏ khoảng trắng
+            });
+
+            if (dataCheck.hoTen === "") {
+                // error.textContent = "Không được bỏ trống tên";
+                showToast("Không được bỏ trống tên", "error")
+                return;
+            }
+
+            if (dataCheck.soDienThoai === "" || dataCheck.soDienThoai.length !== 10 || !/^\d{10}$/.test(dataCheck.soDienThoai)) {
+                // error.textContent = "Số điện thoại phải là 10 chữ số";
+                showToast("Số điện thoại phải là 10 số", "error")
+                return;
+            }
+
+            if (dataCheck.ngaySinh === "") {
+                // error.textContent = "Không được bỏ trống ngày sinh";
+                showToast("Không được bỏ trống ngày sinh", "error")
+                return;
+            }
+
+            const birthYear = new Date(dataCheck.ngaySinh).getFullYear();
+            const currentYear = new Date().getFullYear();
+            if (birthYear > currentYear - 16) {
+                // error.textContent = "Người dùng phải trên 16 tuổi";
+                showToast("Người dùng phải trên 16 tuổi", "error")
+                return;
+            }
+
+            if (dataCheck.email === "") {
+                // error.textContent = "Không được bỏ trống email";
+                showToast("Không được bỏ trống email", "error")
+                return;
+            }
+
+            if (!isValidEmail(dataCheck.email)) {
+                // error.textContent = "Email không hợp lệ";
+                showToast("Email không hợp lệ", "error")
+                return;
+            }
+
+            if (dataCheck.thanhPho === "") {
+                // error.textContent = "Hãy chọn thành phố";
+                showToast("Hãy chọn thành phố", "error")
+                return;
+            }
+
+            if (dataCheck.huyen === "") {
+                // error.textContent = "Hãy chọn huyện";
+                showToast("Hãy chọn huyện", "error")
+                return;
+            }
+
+            if (dataCheck.xa === "") {
+                // error.textContent = "Hãy chọn xã";
+                showToast("Hãy chọn xã", "error")
+                return;
+            }
+
+
+
+            if (dataCheck.diaChi === "") {
+                // error.textContent = "Không được bỏ trống địa chỉ";
+                showToast("Không được bỏ trống địa chỉ", "error")
+                return;
+            }
+
+            $.ajax({
+                url: "/api/khachHang/data?id=0",
+                method: "GET",
+                success: function (data) {
+                    const isPhoneDuplicate = data.some(item => item.soDienThoai === dataCheck.soDienThoai);
+                    const isEmailDuplicate = data.some(item => item.email === dataCheck.email);
+
+                    if (isPhoneDuplicate) {
+                        // error.textContent = "Số điện thoại đã được sử dụng";
+                        showToast("Số điện thoại đã được sử dụng", "error")
+                        return;
+                    }
+
+                    if (isEmailDuplicate) {
+                        // error.textContent = "Email đã được sử dụng";
+                        showToast("Email đã được sử dụng", "error")
+                        return;
+                    }
+                    Swal.fire({
+                        title: 'Xác nhận thêm khách hàng',
+                        html: 'Bạn có chắc chắn muốn thêm khách hàng không?',
+                        icon: 'success',
+                        showCancelButton: true,       // Hiển thị nút "Hủy"
+                        confirmButtonText: 'Xác nhận', // Nút xác nhận đăng xuất
+                        cancelButtonText: 'Hủy'        // Nút hủy
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            console.log(dataCheck)
+                            form.submit();
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function getProvinceName(provinceId) {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province',
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                    },
+                    success: function (data) {
+                        let province = data.data.find(item => item.ProvinceID == provinceId);
+                        if (province) {
+                            resolve(province.ProvinceName);  // Trả về tên tỉnh khi thành công
+                        } else {
+                            reject('Province not found');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        reject('Error fetching province: ' + error);  // Nếu có lỗi xảy ra
+                    }
+                });
+            });
+        }
+        function getDistrictName(districtId, provinceId) {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                    },
+                    data: JSON.stringify({"province_id": parseInt(provinceId)}),
+                    success: function (data) {
+                        let district = data.data.find(item => item.DistrictID == districtId);
+                        if (district) {
+                            resolve(district.DistrictName);  // Trả về tên quận/huyện khi tìm thấy
+                        } else {
+                            reject('District not found');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        reject('Error fetching district: ' + error);  // Trả về lỗi nếu có sự cố
+                    }
+                });
+            });
+        }
+        function getWardName(wardId, districtId) {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Token': 'e72e960b-9e77-11ef-a35f-3e447ea83dcd'
+                    },
+                    data: JSON.stringify({"district_id": parseInt(districtId)}),
+                    success: function (data) {
+                        let ward = data.data.find(item => item.WardCode == wardId);
+                        if (ward) {
+                            resolve(ward.WardName);  // Trả về tên phường/xã khi tìm thấy
+                        } else {
+                            reject('Ward not found');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        reject('Error fetching ward: ' + error);  // Trả về lỗi nếu có sự cố
+                    }
+                });
+            });
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(email);
+        }
+
+        function showToast(message, status) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: status,
+                title: message
+            });
+        }
+    </script>
+</div>
+<!--script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>

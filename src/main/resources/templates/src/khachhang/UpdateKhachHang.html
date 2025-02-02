@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body onload="loadingg()">
+<div class="container-scroller">
+    <!--_navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}">
+    </div>
+    <!-- _navbar -->
+    <div class="container-fluid page-body-wrapper">
+        <!--_sidebar-->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+        <!--_sidebar-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <form th:action="@{/khachhang/updateData}" method="post" id="myForm">
+                    <div class="row">
+                        <!-- Phần thông tin bên trái -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <input type="text" th:value="${KH.id}" id="id" name="id" style="display: none">
+                                <h5>Thông tin khách hàng</h5>
+                                <div class="mb-3">
+                                    <label for="customerCode" class="form-label">Tên khách hàng</label>
+                                    <input type="text" id="customerCode" th:value="${KH.hoTen}" name="hoTen" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input type="text" id="phone" th:value="${KH.soDienThoai}"  name="soDienThoai" class="form-control" required
+                                           pattern="\d{10}" title="Vui lòng nhập đúng 10 số">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Ngày sinh</label>
+                                    <input type="date" id="ngaySinh" th:value="${KH.ngaySinh}" name="ngaySinh" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" th:value="${KH.email}" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Giới tính</label>
+                                    <select id="gender" name="gioiTinh" class="form-select">
+                                        <option value="Nam" th:selected="${KH.gioiTinh == 'Nam'}">Nam</option>
+                                        <option value="Nữ" th:selected="${KH.gioiTinh == 'Nữ'}">Nữ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phần thông tin bên phải -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <h5>Thông tin địa chỉ</h5>
+                                <div class="mb-3">
+                                    <label for="province" class="form-label">Tỉnh/ Thành phố</label>
+                                    <select id="province" onchange="loadDistricts('','')" name="province" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                    <input type="text" th:value="${KH.thanhPho}" style="display: none" name="thanhPho" id="thanhPho">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="district" class="form-label">Quận/ Huyện</label>
+                                    <select id="district" onchange="loadWards('')" name="district" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                    <input type="text" th:value="${KH.huyen}" style="display: none" name="huyen" id="huyen">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ward" class="form-label">Phường/ Xã</label>
+                                    <select id="ward" onchange="getAddress()" name="ward" class="form-select" required>
+                                        <option value="">Chọn</option>
+                                    </select>
+                                    <input type="text" th:value="${KH.xa}" style="display: none" name="xa" id="xa">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="addressDetails" class="form-label">Địa chỉ chi tiết</label>
+                                    <input type="text" id="addressDetails" name="diaChi" class="form-control" placeholder="Số nhà, đường..." required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="checkValidate(event)" type="submit" class="btn btn-success">Lưu</button>
+                    <a href="/admin/khachhang" class="btn btn-secondary">Hủy</a>
+                </form>
+            </div>
+            <!--footer-->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+            <!--footer-->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/static/src/js/concac.js"></script>
+</div>
+<!--script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>

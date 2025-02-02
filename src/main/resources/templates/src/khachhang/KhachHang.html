@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"
+>
+</head>
+<body onload="loading()">
+<div class="container-scroller">
+    <!--_navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}">
+    </div>
+    <!-- _navbar -->
+    <div class="container-fluid page-body-wrapper">
+        <!--_sidebar-->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+        <!--_sidebar-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <main class="container-fluid px-3 py-4">
+                    <h3 class="fw-bold fs-4 mb-3">Danh Sách Khách Hàng</h3>
+                    <!-- Thông báo -->
+
+                    <div class="row">
+                        <div class="col-12 text-end mb-3">
+                            <a class="btn btn-dark" th:href="@{/khachhang/add}">
+                                <i class="lni lni-plus"></i> Thêm mới
+                            </a>
+                        </div>
+
+                        <div class="col-12 table-responsive">
+                            <table class="table table-striped table-hover table-bordered" id="multi-filter-select">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Tên khách hàng</th>
+                                    <th scope="col">Số điện thoại</th>
+                                    <th scope="col">Ngày sinh</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Giới tính</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="customer : ${khachHangs}">
+                                    <td th:text="${customer.id}"></td>
+                                    <td th:text="${customer.hoTen}"></td>
+                                    <td th:text="${customer.soDienThoai}"></td>
+                                    <td th:text="${customer.ngaySinh}"></td>
+                                    <td th:text="${customer.email}"></td>
+                                    <td th:text="${customer.diaChi}+ ', ' +${customer.thanhPho} +', '+ ${customer.huyen} +', '+ ${customer.xa}">
+                                    </td>
+                                    <td th:text="${customer.gioiTinh}"></td>
+                                    <td th:text="${customer.trangThai}"></td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn btn-primary btn-sm me-1" th:href="@{/khachhang/update(id=${customer.id})}">
+                                                <i class="lni lni-pencil">Update</i>
+                                            </a>
+                                            <form action="" method="get" id="myForm">
+                                            <button th:id="${customer.id}" type="submit" class="btn btn-danger btn-sm"
+                                               onclick="submitForm(event, this.getAttribute('id'))">
+                                                <i class="lni" th:classappend="${customer.trangThai.equals('Hoạt động') ? 'lni-ban' : 'lni-checkmark-circle'}">Chuyển trạng thái</i>
+                                            </button>
+                                            </form>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+            <!--footer-->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+            <!--footer-->
+        </div>
+    </div>
+    <script>
+        function loading(){
+            $("#multi-filter-select").DataTable({
+                pageLength: 5
+            });
+        }
+        function submitForm(e, idKH) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Xác nhận chuyển trạng thái',
+                html: 'Bạn có chắc muốn chuyển trạng thái không?',
+                icon: 'warning',
+                showCancelButton: true,       // Hiển thị nút "Hủy"
+                confirmButtonText: 'Xác nhận', // Nút xác nhận đăng xuất
+                cancelButtonText: 'Hủy'        // Nút hủy
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("myForm").submit();
+                    window.location.href = "/khachhang/delete?id=" + idKH;
+                }
+            });
+        }
+    </script>
+</div>
+<!--script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>

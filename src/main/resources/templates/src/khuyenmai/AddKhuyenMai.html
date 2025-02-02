@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body onload="loading()">
+<div class="container-scroller">
+    <!--_navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}">
+    </div>
+    <!-- _navbar -->
+    <div class="container-fluid page-body-wrapper">
+        <!--_sidebar-->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+        <!--_sidebar-->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <form id="promotionForm" method="post" th:action="@{/khuyenmai/addkhuyenmai/save}"
+                      th:object="${khuyenMai}">
+                    <div class="form-container row">
+                        <div class="form-section col-6">
+                            <div id="toastContainer" class="toast-container"></div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Tạo đợt khuyến mãi</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="name">Tên đợt khuyến mãi</label>
+                                        <input class="form-control" id="name" maxlength="255"
+                                               th:field="*{tenKhuyenMai}"
+                                               type="text">
+                                    </div>
+
+                                    <label class="form-label" for="price">Giá trị</label>
+                                    <div class="d-flex">
+                                        <div class="mb-3 col-11">
+                                            <input class="form-control" oninput="checkPrice()" id="price" required th:field="*{giaTriGiam}"
+                                                   type="number">
+                                        </div>
+                                        <div class="">
+                                            <div class="d-flex">
+                                                <input name="loaiKhuyenMai" id="radioPercent" type="radio" value="percent"
+                                                       checked> %
+                                            </div>
+                                            <div class="d-flex mt-2">
+                                                <input name="loaiKhuyenMai" id="radioVND" type="radio" value="vnd"> VND
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--                                    <div class="mb-3">-->
+                                    <!--                                        <label for="quantity" class="form-label">Số lượng</label>-->
+                                    <!--                                        <input type="number" class="form-control" id="quantity" th:field="*{quantity}" min="1"-->
+                                    <!--                                               required>-->
+                                    <!--                                    </div>-->
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="dateStart">Ngày bắt đầu</label>
+                                        <input class="form-control" id="dateStart" required
+                                               th:field="*{ngayBatDau}"
+                                               type="datetime-local">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="dateEnd">Ngày kết thúc</label>
+                                        <input class="form-control" id="dateEnd" required
+                                               th:field="*{ngayKetThuc}"
+                                               type="datetime-local">
+                                    </div>
+                                    <input id="selectedProducts" name="selectedProducts" type="hidden">
+                                    <!--                        <input type="hidden" name="selectedProducts" id="selectedProducts">-->
+                                    <span class="btn btn-dark" id="btnSubmit" th:attr="onclick='submit(event)'">Lưu</span>
+                                    <a class="btn btn-primary" th:href="@{/admin/khuyenmai}">Hủy</a> <br>
+                                    <span style="color: red" id="error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="product-section">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Danh sách sản phẩm</h5>
+                                        <table class="table table-striped" id="multi-filter-select">
+                                            <thead>
+                                            <tr>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Hoạt động</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="product : ${products}">
+                                                <td th:text="${product.tensanpham}"></td>
+                                                <td>
+                                                    <button class="btn btn-dark"
+                                                            th:attr="onclick='showProductDetails(event,' + ${product.id} + ')'">Chọn
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" card product-detail-table mt-5
+                                    " id="productDetailTable">
+                            <div class="card-body">
+                                <h5>Chi tiết sản phẩm</h5>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>Mã sản phẩm chi tiết</th>
+                                        <th>Sản phẩm chi tiết</th>
+                                        <th>Giá</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="productDetailBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--footer-->
+                        <div th:replace="~{src/partials/_footer :: _footer}"></div>
+                        <!--footer-->
+                    </div>
+                    <!--script -->
+                    <div th:replace="~{src/partials/_script :: _script}"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        const checkboxStates = {};
+
+        function loading() {
+            $("#multi-filter-select").DataTable({
+                pageLength: 4
+            });
+        }
+
+        function showProductDetails(e, id) {
+            e.preventDefault();
+            console.log(id)
+            $.ajax({
+                url: "http://localhost:8080/khuyenmai/sanphamchitiet/" + id,
+                type: "GET",
+                success: function (data) {
+                    console.log(data)
+                    const details = data;
+                    const detailsTbody = document.getElementById("productDetailBody");
+                    detailsTbody.innerHTML = '';
+                    details.forEach(detail => {
+                        const price = detail.gia_ban.toLocaleString('vi-VN') + " VND";
+                        const isChecked = checkboxStates[id] && checkboxStates[id][detail.id];
+                        const row = `
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" oninput="checkPrice()" name="selectedDetails" value="${detail.id}" id="${detail.id}" ${isChecked ? 'checked' : ''} onclick="saveCheckboxState(${id}, '${detail.id}')">
+                                <label class="form-check-label" for="${detail.id}"></label>
+                            </div>
+                        </td>
+                        <td>${detail.id}</td>
+                         <td>${detail.sanPham.tensanpham} [ ${detail.mauSac.tenmausac} - ${detail.size.ten_size} ]</td>
+                         <td>${price}</td>
+                    </tr>
+                `;
+                        detailsTbody.insertAdjacentHTML('beforeend', row);
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }
+
+        function saveCheckboxState(id, checkboxId) {
+            const checkbox = document.getElementById(checkboxId);
+            if (!checkboxStates[id]) {
+                checkboxStates[id] = {};
+            }
+            checkboxStates[id][checkboxId] = checkbox.checked;
+            updateSelectedProducts();
+        }
+
+        function updateSelectedProducts() {
+            const selectedProductsInput = document.getElementById('selectedProducts');
+            const selectedIds = [];
+
+            for (const id in checkboxStates) {
+                for (const checkboxId in checkboxStates[id]) {
+                    if (checkboxStates[id][checkboxId]) {
+                        selectedIds.push(checkboxId);
+                    }
+                }
+            }
+
+            selectedProductsInput.value = selectedIds.join(',');
+        }
+
+        function submit(e) {
+            e.preventDefault();
+            let error = document.getElementById("error");
+            let form = document.getElementById("promotionForm");
+            let name = document.getElementById("name").value;
+            let price = document.getElementById("price").value;
+            // let quantity = document.getElementById("quantity").value;
+            let dateStart = document.getElementById("dateStart").value;
+            let dateEnd = document.getElementById("dateEnd").value;
+            let selectedProduct = document.getElementById("selectedProducts").value;
+            let radioPercent = document.getElementById("radioPercent");
+            let radioVND = document.getElementById("radioVND");
+            let currentDate = new Date();
+            // Chuyển đổi dateStart và dateEnd thành đối tượng Date
+            let startDate = new Date(dateStart);
+            let endDate = new Date(dateEnd);
+            if (name.trim() === "") {
+                // error.innerText = "Tên không được để trống";
+                showToast("Tên không được để trống", "error")
+            } else if (radioPercent.checked && (price.trim() === "" || price < 1 || price > 100)) {
+                // error.innerText = "Giá trị giảm phải từ 1-100%";
+                showToast("Giá trị giảm phải từ 1-100%", "error")
+            } else if (radioVND.checked && (price.trim() === "" || price < 1000)) {
+                // error.innerText = "Giá trị giảm phải lớn hơn 1.000 VND"
+                showToast("Giá trị giảm phải lớn hơn 1000 VND", "error")
+            }
+                // else if (quantity.trim() === "" || quantity < 1) {
+                //     error.innerText = "Số lượng phải lớn hơn 0"
+            // }
+            else if (dateStart.trim() === "" || startDate < currentDate) {
+                // error.innerText = "Ngày bắt đầu phải lớn hơn ngày hiện tại"
+                showToast("Ngày bắt đầu phải lớn hơn ngày hiện tại", "error")
+            } else if (dateEnd.trim() === "" || startDate > endDate) {
+                // error.innerText ="Ngày bắt đầu lớn hơn ngày kết thúc"
+                showToast("Ngày bắt đầu lớn hơn ngày kết thúc", "error")
+            } else if (selectedProduct.trim() === "") {
+                // error.innerText = "Vui lòng chọn sản phẩm"
+                showToast("Vui lòng chọn sản phẩm", "error")
+            } else {
+                form.submit();
+            }
+        }
+        // cron job
+        async function checkPrice() {
+            let error = document.getElementById("error");
+            const idProductDetails = document.getElementById("selectedProducts").value;
+            const price = document.getElementById("price").value;
+            const radioVND = document.getElementById("radioVND");
+            const btnSubmit = document.getElementById("btnSubmit");
+            if (radioVND.checked) {
+                const arr = idProductDetails.split(",").map(Number);
+                for (const int of arr) {
+                    try {
+                        const message = await $.ajax({
+                            url: `http://localhost:8080/khuyenmai/checkPrice/${int}?price=${price}`,
+                            type: "GET"
+                        });
+                        console.log(message);
+                        if (message !== "") {
+                            error.innerText = `Đang có sản phẩm chi tiết của sản phẩm ${message} có giá nhỏ hơn giá giảm của đợt giảm giá`;
+                            btnSubmit.classList.add("disabled");
+                            break;
+                        } else {
+                            error.innerText = "";
+                            btnSubmit.classList.remove("disabled");
+                        }
+                    } catch (error) {
+                        console.log(error);
+                        break; // Dừng vòng lặp nếu có lỗi từ server
+                    }
+                }
+            }
+        }
+
+        //   function showToast(message) {
+        //       const toastContainer = document.getElementById('toastContainer');
+        //       const newToast = document.createElement('div');
+        //       newToast.className = 'toast show';
+        //       const toastId = `toast-${Date.now()}`;
+        //       newToast.innerHTML = `
+        //   <span id="toastMessage">${message}</span>
+        //   <div class="closeToast">
+        //     <span id="closeToast" class="close">&times;</span>
+        //     <div id="countdown">5s</div>
+        //   </div>
+        //   <div class="progress"></div>
+        // `;
+        //       toastContainer.appendChild(newToast);
+        //       const countdown = newToast.querySelector('#countdown');
+        //       const closeToast = newToast.querySelector('.close');
+        //       const progress = newToast.querySelector('.progress');
+        //       progress.style.animation = 'none';
+        //       setTimeout(() => {
+        //           progress.style.animation = '';
+        //       }, 10);
+        //       let remainingTime = 5;
+        //       countdown.textContent = `${remainingTime}s`;
+        //       const countdownInterval = setInterval(() => {
+        //           remainingTime -= 1;
+        //           countdown.textContent = `${remainingTime}s`;
+        //           if (remainingTime === 0) {
+        //               clearInterval(countdownInterval);
+        //               toastContainer.removeChild(newToast);
+        //           }
+        //       }, 1000);
+        //       closeToast.onclick = function () {
+        //           clearInterval(countdownInterval);
+        //           toastContainer.removeChild(newToast);
+        //       };
+        //   }
+        function showToast(message, status) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: status,
+                title: message
+            });
+        }
+    </script>
+</div>
+</body>
+</html>

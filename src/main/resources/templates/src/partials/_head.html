@@ -1,0 +1,62 @@
+<head th:fragment="_head">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <link rel="stylesheet" th:href="@{/static/src/assets/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/static/src/assets/vendors/ti-icons/css/themify-icons.css}">
+    <link rel="stylesheet" th:href="@{/static/src/assets/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" th:href="@{/static/src/assets/vendors/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/src/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Thêm thư viện JavaScript SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{/static/src/assets/css/style.css}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" th:href="@{/static/src/assets/images/favicon.png}"/>
+    <style>
+        .content-wrapper {
+            margin-top: 35px;
+        }
+
+    </style>
+    <style>
+        .notification {
+            position: relative;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .notification.warning {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: white;
+        }
+    </style>
+</head>

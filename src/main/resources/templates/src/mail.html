@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông Tin Tài Khoản Của Bạn</title>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Thông Tin Tài Khoản Của Bạn</h2>
+    </div>
+    <div class="content">
+        <p>Kính gửi Quý khách hàng <strong th:text="${name}"></strong>,</p>
+        <p>Cảm ơn Quý khách đã đăng ký tài khoản tại <strong>[Nhóm DATN - Website Bán Giày]</strong>. Dưới đây là thông tin tài khoản của Quý khách:</p>
+        <ul>
+            <li><strong>Tên đăng nhập:</strong> Email bạn đăng kí trên form</span></li>
+            <li><strong>Mật khẩu:</strong> <span th:text="${password}"></span></li>
+        </ul>
+        <p>Quý khách vui lòng sử dụng thông tin trên để đăng nhập vào hệ thống của chúng tôi tại:
+            <a th:href="${loginUrl}">[Hiện tại chưa làm web]</a>
+        </p>
+        <p>Chúng tôi khuyến nghị Quý khách nên thay đổi mật khẩu ngay sau khi đăng nhập để bảo mật tài khoản của mình. Nếu Quý khách có bất kỳ thắc mắc hoặc gặp khó khăn nào khi đăng nhập, vui lòng liên hệ với chúng tôi qua [ntrungkien072@gmail.com/0358511635].</p>
+    </div>
+    <div class="footer">
+        <p>Trân trọng,</p>
+        <p><strong>[Nhóm DATN - Website Bán Giày]</strong></p>
+        <p>[Trường cao đẳng FPT PolyTechnic]</p>
+        <p>[ntrungkien072@gmail.com]</p>
+        <p>[0358511635]</p>
+    </div>
+</div>
+</body>
+</html>

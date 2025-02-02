@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"></head>
+<body>
+<div class="container-scroller">
+  <!-- Navbar -->
+  <div th:replace="~{src/partials/_navbar :: _navbar}"></div>
+
+  <div class="container-fluid page-body-wrapper">
+    <!-- Sidebar -->
+    <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <form th:action="@{/mau-sac/updateData}" method="post" id="myForm">
+          <input type="hidden" th:value="${MS.id}" name="id">
+          <h5>Thông tin</h5>
+          <div class="mb-3">
+            <label for="ma" class="form-label">Mã</label>
+            <input type="text" id="ma" th:value="${MS.ma_mausac}" name="ma_mausac" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="customerCode" class="form-label">Tên</label>
+            <input type="text" id="customerCode" th:value="${MS.tenmausac}" name="tenmausac" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-success" onclick="submitForm(event)">Lưu</button>
+          <a href="/admin/mau-sac" class="btn btn-secondary">Hủy</a>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div th:replace="~{src/partials/_footer :: _footer}"></div>
+    </div>
+  </div>
+  <script>
+
+    function submitForm(e){
+      e.preventDefault();
+      Swal.fire({
+        title: 'Xác nhận sửa màu sắc',
+        html: 'Bạn có chắc chắn muốn sửa màu sắc không?',
+        icon: 'warning',
+        showCancelButton: true,       // Hiển thị nút "Hủy"
+        confirmButtonText: 'Xác nhận', // Nút xác nhận đăng xuất
+        cancelButtonText: 'Hủy'        // Nút hủy
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById("myForm").submit();
+        }
+      });
+    }
+  </script>
+</div>
+<!-- Script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>

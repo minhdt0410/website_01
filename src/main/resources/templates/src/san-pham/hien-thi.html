@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"></head>
+<body onload="loading()">
+<div class="container-scroller">
+
+    <!-- Navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}"></div>
+
+    <div class="container-fluid page-body-wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <h3 class="fw-bold fs-4 mb-3">Danh Sách Sản Phẩm</h3>
+                <div class="row">
+                    <div class="col-12 text-end mb-3">
+                        <a class="btn btn-dark" th:href="@{/san-pham/add}">
+                            <i class="lni lni-plus"></i> Thêm mới
+                        </a>
+                    </div>
+                    <div class="col-12 table-responsive">
+                        <table class="table table-striped table-hover table-bordered" id="multi-filter-select">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Mã sản phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Thương hiệu</th>
+                                <th>Loại Đế</th>
+                                <th>Chất Liệu</th>
+<!--                                <th>Ảnh</th>-->
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sp : ${sp}">
+                                <td th:text="${sp.id}"></td>
+                                <td th:text="${sp.ma_sanpham}"></td>
+                                <td th:text="${sp.tensanpham}"></td>
+                                <td th:text="${sp.thuongHieu.tenThuongHieu}"></td>
+                                <td th:text="${sp.loaiDe != null ? sp.loaiDe.tenloaide : 'N/A'}"></td>
+                                <td th:text="${sp.chatLieu != null ? sp.chatLieu.tenchatlieu : 'N/A'}"></td>
+<!--                                <td>-->
+<!--                                    <img th:src="${sp.url_anh}" alt="Ảnh sản phẩm" style="max-width: 50px; max-height: 50px;"/>-->
+<!--                                </td>-->
+                                <td th:text="${sp.trangthai ? 'Còn hàng' : 'Hết hàng'}"></td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-primary btn-sm me-1" th:href="@{/san-pham/update(id=${sp.id})}">
+                                            <i class="lni lni-pencil"></i> Sửa
+                                        </a>
+<!--                                        <form th:action="@{/san-pham/delete}" method="post" style="display:inline;"id="myForm">-->
+<!--                                            <input type="hidden" name="id" th:value="${sp.id}" />-->
+<!--                                            <button type="submit" class="btn btn-danger btn-sm" onclick="submitForm(event)">Xóa</button>-->
+<!--                                        </form>-->
+                                    </div>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+        </div>
+    </div>
+    <script>
+        function loading(){
+            $("#multi-filter-select").DataTable({
+                pageLength: 5
+            });
+        }
+        function submitForm(e){
+            e.preventDefault();
+            Swal.fire({
+                title: 'Xác nhận xóa sản phẩm',
+                html: 'Bạn có chắc chắn muốn xóa sản phẩm này không?',
+                icon: 'warning',
+                showCancelButton: true,       // Hiển thị nút "Hủy"
+                confirmButtonText: 'Xác nhận', // Nút xác nhận đăng xuất
+                cancelButtonText: 'Hủy'        // Nút hủy
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("myForm").submit();
+                }
+            });
+        }
+    </script>
+</div>
+<!-- Script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>

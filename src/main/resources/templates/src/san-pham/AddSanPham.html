@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"></head>
+<body>
+<div class="container-scroller">
+    <!-- Navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}"></div>
+
+    <div class="container-fluid page-body-wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <form th:action="@{/san-pham/save}" method="post" id="myForm" onsubmit="return validateForm()">
+                    <h4>Thông tin sản phẩm</h4>
+                    <hr>
+                    <br>
+                    <div class="row">
+                        <!-- Phần thông tin bên trái -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <div class="mb-3">
+                                    <label for="ma" class="form-label">Mã sản phẩm</label>
+                                    <input type="text" id="ma" name="ma_sanpham" class="form-control" th:value="${maSanPhamMoi}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tensanpham" class="form-label">Tên sản phẩm</label>
+                                    <input type="text" id="tensanpham" name="tensanpham" class="form-control" required>
+                                    <span class="text-danger" id="error-tensanpham"></span>
+                                </div>
+<!--                                <div class="mb-3">-->
+<!--                                    <label for="url_anh" class="form-label">URL ảnh</label>-->
+<!--                                    <input type="text" id="url_anh" name="url_anh" class="form-control" required readonly>-->
+<!--                                    <button type="button" class="btn btn-info mt-2" onclick="openFileDialog()">Chọn ảnh</button>-->
+<!--                                </div>-->
+<!--                                <div class="mb-3">-->
+<!--                                    <img id="preview" src="#" alt="Ảnh sản phẩm" style="display:none; max-width: 200px; max-height: 200px;"/>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+
+                        <!-- Phần thông tin bên phải -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <div class="mb-3">
+                                    <label for="thuonghieu" class="form-label">Thương hiệu</label>
+                                    <select id="thuonghieu" name="thuongHieu.id" class="form-select" required>
+                                        <option th:each="th : ${thuongHieus}" th:value="${th.id}" th:text="${th.tenThuongHieu}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loaiDe" class="form-label">Loại đế</label>
+                                    <select id="loaiDe" name="loaiDe" class="form-control" required>
+                                        <option th:each="ld : ${listLD}" th:value="${ld.id}" th:text="${ld.tenloaide}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="chatLieu" class="form-label">Chất liệu</label>
+                                    <select id="chatLieu" name="chatLieu" class="form-control" required>
+                                        <option th:each="cl : ${listCL}" th:value="${cl.id}" th:text="${cl.tenchatlieu}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 d-flex">
+                        <label class="form-label pe-5">Size :</label>
+                        <div class="px-2" th:each="size : ${listSize}">
+                            <input class="me-1" type="checkbox" th:id="${'size_' + size.id}" th:style="pb-2" th:value="${size.id}" name="sizes" th:text="${size.ten_size}" onchange="updatePreview()">
+                            <label class="px-1" th:for="${'size_' + size.id}"></label>
+                        </div>
+                    </div>
+                    <span class="text-danger" id="error-size"></span>
+
+                    <div class="mb-3 d-flex">
+                        <label class="form-label pe-5">Màu sắc :</label>
+                        <div class="px-2" th:each="mauSac : ${listMauSac}">
+                            <input class="me-1" type="checkbox" th:id="${'mauSac_' + mauSac.id}" th:value="${mauSac.id}" name="mauSacs" th:text="${mauSac.tenmausac}" onchange="updatePreview()">
+                            <label class="px-1" th:for="${'mauSac_' + mauSac.id}"></label>
+                        </div>
+                    </div>
+                    <span class="text-danger" id="error-mauSac"></span>
+
+                    <h4>Dự kiến sản phẩm chi tiết sẽ thêm</h4>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Size</th>
+                            <th>Màu Sắc</th>
+                            <th>Số lượng</th>
+                            <th>Giá bán</th>
+                            <th>Hình ảnh</th>
+                        </tr>
+                        </thead>
+                        <tbody id="preview-table">
+                        <!-- Hàng dữ liệu sẽ được thêm ở đây bởi JavaScript -->
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-success">Lưu</button>
+                    <a href="/admin/san-pham" class="btn btn-secondary">Hủy</a>
+                </form>
+            </div>
+            <!-- Footer -->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+        </div>
+    </div>
+    <script>
+        // const fileInput = document.getElementById('fileInput');
+        // const preview = document.getElementById('preview-img');
+        //
+        // // Xử lý sự kiện khi người dùng chọn file
+        // fileInput.addEventListener('change', function(event) {
+        //     console.log("haha")
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         const reader = new FileReader();
+        //
+        //         // Khi đọc file xong, hiển thị ảnh
+        //         reader.onload = function(e) {
+        //             preview.src = e.target.result;
+        //         };
+        //
+        //         // Đọc file dưới dạng URL
+        //         reader.readAsDataURL(file);
+        //     }
+        // });
+    </script>
+</div>
+<!-- Script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+<script>
+
+    function openFileDialog() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('preview').style.display = 'block';
+                    document.getElementById('url_anh').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        fileInput.click();
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        // Validate Tên sản phẩm
+        const tensanpham = document.getElementById('tensanpham');
+        const errorTenSanPham = document.getElementById('error-tensanpham');
+        if (!tensanpham.value.trim()) {
+            errorTenSanPham.textContent = "Tên sản phẩm không được để trống.";
+            isValid = false;
+        } else {
+            errorTenSanPham.textContent = "";
+        }
+
+        // Validate Size
+        const sizes = document.querySelectorAll("input[name='sizes']:checked");
+        const errorSize = document.getElementById('error-size');
+        if (sizes.length === 0) {
+            errorSize.textContent = "Vui lòng chọn ít nhất một Size.";
+            isValid = false;
+        } else {
+            errorSize.textContent = "";
+        }
+
+        // Validate Màu sắc
+        const mauSacs = document.querySelectorAll("input[name='mauSacs']:checked");
+        const errorMauSac = document.getElementById('error-mauSac');
+        if (mauSacs.length === 0) {
+            errorMauSac.textContent = "Vui lòng chọn ít nhất một Màu sắc.";
+            isValid = false;
+        } else {
+            errorMauSac.textContent = "";
+        }
+
+        return isValid;
+    }
+
+    function updatePreview() {
+        // Lấy danh sách size và màu sắc được chọn
+        const sizes = Array.from(document.querySelectorAll("input[name='sizes']:checked")).map(cb => ({
+            id: cb.value,
+            name: cb.nextSibling.textContent.trim()
+        }));
+        const colors = Array.from(document.querySelectorAll("input[name='mauSacs']:checked")).map(cb => ({
+            id: cb.value,
+            name: cb.nextSibling.textContent.trim()
+        }));
+
+        // Xóa dữ liệu cũ trong bảng
+        const previewTable = document.getElementById("preview-table");
+        previewTable.innerHTML = "";
+
+        // Tạo các dòng dựa trên tổ hợp size và màu sắc
+        let index = 1;
+        sizes.forEach(size => {
+            colors.forEach(color => {
+                const row = document.createElement("tr");
+
+                // Cột STT
+                const sttCell = document.createElement("td");
+                sttCell.textContent = index++;
+                row.appendChild(sttCell);
+
+                // Cột Size
+                const sizeCell = document.createElement("td");
+                sizeCell.textContent = size.name;
+                row.appendChild(sizeCell);
+
+                // Cột Màu Sắc
+                const colorCell = document.createElement("td");
+                colorCell.textContent = color.name;
+                row.appendChild(colorCell);
+
+                // Cột Số lượng
+                const quantityCell = document.createElement("td");
+                const quantityInput = document.createElement("input");
+                quantityInput.type = "number";
+                quantityInput.name = "quantities";
+                quantityInput.min = "1";
+                quantityInput.value = "1";
+                quantityInput.classList.add("form-control");
+                quantityCell.appendChild(quantityInput);
+                row.appendChild(quantityCell);
+
+                // Cột Giá bán
+                const priceCell = document.createElement("td");
+                const priceInput = document.createElement("input");
+                priceInput.type = "number";
+                priceInput.name = "prices";
+                priceInput.min = "1";
+                priceInput.value = "1";
+                priceInput.classList.add("form-control");
+                priceCell.appendChild(priceInput);
+                row.appendChild(priceCell);
+
+
+                const imageCell = document.createElement("td");
+
+                const fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.id = "fileInput";
+                fileInput.accept = "image/*";
+                fileInput.style.maxWidth = "75px";
+
+                const previewImg = document.createElement("img");
+                previewImg.id = "preview-img";
+                previewImg.src = "";  // Khởi tạo ảnh trống
+                previewImg.alt = "Không có ảnh";
+                previewImg.style.maxWidth = "300px";
+
+                const input = document.createElement("input");
+                input.type = "text";
+                input.name = "images";
+                input.style.display = "none";
+
+                fileInput.addEventListener("change", function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImg.src = e.target.result;
+                            input.value = e.target.result
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                imageCell.appendChild(fileInput);
+                imageCell.appendChild(previewImg);
+                imageCell.appendChild(input);
+
+                row.appendChild(imageCell);
+
+
+                previewTable.appendChild(row);
+            });
+        });
+    }
+</script>
+</body>
+</html>

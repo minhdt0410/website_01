@@ -1,0 +1,81 @@
+<aside th:fragment="_sidebar">
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+            <li class="nav-item nav-profile">
+                <a href="/admin" class="nav-link">
+                    <div class="nav-profile-image">
+                        <img th:src="@{../static/src/assets/images/faces/face1.jpg}" alt="profile"/>
+                        <span class="login-status online"></span>
+                        <!--change to offline or busy as needed-->
+                    </div>
+                    <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
+                   aria-controls="ui-basic">
+                    <span class="menu-title">Sản phẩm</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+                </a>
+                <div class="collapse" id="ui-basic">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/san-pham">Sản phẩm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/san-pham-chi-tiet">Sản phẩm chi tiết</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/thuong-hieu">Thương hiệu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/mau-sac">Màu sắc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/chat-lieu">Chất liệu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/size">Size</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/loai-de">Loại đế</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/khachhang">
+                    <span class="menu-title">KHÁCH HÀNG</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/khuyenmai">
+                    <span class="menu-title">KHUYẾN MẠI</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/hoadon">
+                    <span class="menu-title">HÓA ĐƠN</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/donhang">
+                    <span class="menu-title">ĐƠN HÀNG</span>
+                    <i class="mdi mdi-home menu-icon"></i>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/thongke">
+                    <span class="menu-title">THỐNG KÊ</span>
+                    <i class="mdi mdi-chart-bar menu-icon"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</aside>

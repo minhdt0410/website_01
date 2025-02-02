@@ -1,0 +1,169 @@
+<header th:fragment="_header">
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="container mt-5">
+                <h1>THỐNG KÊ</h1>
+                <div class="container">
+                    <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="manhnek-tab" data-toggle="tab" href="#manhnek" role="tab" aria-controls="manhnek" aria-selected="true">TK hóa Đơn</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="manh-tab" data-toggle="tab" href="#manh" role="tab" aria-controls="manh" aria-selected="false">TK trạng thái</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-5" id="myTabContent">
+                        <div class="tab-pane fade show active" id="manhnek" role="tabpanel" aria-labelledby="manhnek-tab">
+                            <h3>THỐNG KÊ HÓA ĐƠN</h3>
+                            <div class="monthForm">
+                                <label for="year">Năm:</label>
+                                <select id="year">
+                                    <option value="">Tất cả</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                </select>
+
+                                <label for="month" >Tháng:</label>
+                                <select id="month">
+                                    <option value="">Tất cả</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+
+                                <button id="filterButton" class="bg-info text-white px-3">Thống kê</button>
+                            </div>
+
+                            <!-- Biểu đồ -->
+                            <canvas id="chart"  width="400" height="200"></canvas>
+                            <div id="summary" style="display: none;">
+                                <p id="totalAmountSummary">Tổng tiền: 0 VNĐ</p>
+                                <p id="totalQuantitySummary">Tổng số lượng: 0</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="manh" role="tabpanel" aria-labelledby="manh-tab">
+                            <h3>THỐNG KÊ TRẠNG THÁI</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#myTabs a').on('click', function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+            });
+
+            document.getElementById('filterButton').addEventListener('click', () => {
+                const year = document.getElementById('year').value;
+                const month = document.getElementById('month').value;
+
+                // Gửi yêu cầu fetch với year và month
+                fetch(`/thong-ke?year=${year || ''}&month=${month || ''}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const months = data.map(item => item.month);
+                        const totalAmounts = data.map(item => item.totalAmount);
+                        const totalQuantities = data.map(item => item.totalQuantity);
+
+                        renderChart(months, totalAmounts, totalQuantities);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+            function renderChart(months, totalAmounts, totalQuantities) {
+                const ctx = document.getElementById('chart').getContext('2d');
+                const summaryDiv = document.getElementById('summary'); // Lấy phần tử #summary
+
+                if (window.myChart) {
+                    window.myChart.destroy(); // Xóa biểu đồ cũ nếu có
+                }
+
+                // Ẩn phần tử #summary trước khi vẽ biểu đồ
+                summaryDiv.style.display = 'none';
+
+                // Chỉ hiển thị tháng nếu có dữ liệu
+                if (months.length === 0) {
+                    showToast('Không có dữ liệu cho tháng này!', 'error',"warning", 5000);
+                    return;
+                }
+
+                window.myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months.map(m => `Tháng ${m}`),  // Hiển thị tháng
+                        datasets: [
+                            {
+                                label: 'Tổng tiền (VNĐ)',
+                                data: totalAmounts,
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Số lượng',
+                                data: totalQuantities,
+                                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Cập nhật thông tin tổng tiền và số lượng dưới biểu đồ
+                const totalAmount = totalAmounts.reduce((acc, amount) => acc + amount, 0);
+                const totalQuantity = totalQuantities.reduce((acc, quantity) => acc + quantity, 0);
+
+                // Hiển thị tổng tiền và số lượng
+                document.getElementById('totalAmountSummary').textContent = `Tổng tiền: ${totalAmount.toLocaleString()} VNĐ`;
+                document.getElementById('totalQuantitySummary').textContent = `Tổng số lượng: ${totalQuantity}`;
+
+                // Hiện phần tử #summary sau khi vẽ biểu đồ
+                summaryDiv.style.display = 'block';
+            }
+            function showToast(message, status) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: status,
+                    title: message
+                });
+            }
+            document.getElementById('home').style.display = 'block';
+            document.getElementById('menu1').style.display = 'block';
+        </script>
+        </div>
+</header>

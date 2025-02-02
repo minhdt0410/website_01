@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en" class="no-js" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="src/Web/index-shoe">
+
+
+<!-- Mirrored from spreethemesprevious.github.io/bisum/html/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 05 Nov 2024 09:31:47 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <title>Bisum - eCommerce Bootstrap 5 Template</title>
+    <!-- meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="meta description">
+    <!-- all css -->
+    <style>
+        :root {
+            --primary-color: #00234D;
+            --secondary-color: #F76B6A;
+
+            --btn-primary-border-radius: 0.25rem;
+            --btn-primary-color: #fff;
+            --btn-primary-background-color: #00234D;
+            --btn-primary-border-color: #00234D;
+            --btn-primary-hover-color: #fff;
+            --btn-primary-background-hover-color: #00234D;
+            --btn-primary-border-hover-color: #00234D;
+            --btn-primary-font-weight: 500;
+
+            --btn-secondary-border-radius: 0.25rem;
+            --btn-secondary-color: #00234D;
+            --btn-secondary-background-color: transparent;
+            --btn-secondary-border-color: #00234D;
+            --btn-secondary-hover-color: #fff;
+            --btn-secondary-background-hover-color: #00234D;
+            --btn-secondary-border-hover-color: #00234D;
+            --btn-secondary-font-weight: 500;
+
+            --heading-color: #000;
+            --heading-font-family: 'Poppins', sans-serif;
+            --heading-font-weight: 700;
+
+            --title-color: #000;
+            --title-font-family: 'Poppins', sans-serif;
+            --title-font-weight: 400;
+
+            --body-color: #000;
+            --body-background-color: #fff;
+            --body-font-family: 'Poppins', sans-serif;
+            --body-font-size: 14px;
+            --body-font-weight: 400;
+
+            --section-heading-color: #000;
+            --section-heading-font-family: 'Poppins', sans-serif;
+            --section-heading-font-size: 48px;
+            --section-heading-font-weight: 600;
+
+            --section-subheading-color: #000;
+            --section-subheading-font-family: 'Poppins', sans-serif;
+            --section-subheading-font-size: 16px;
+            --section-subheading-font-weight: 400;
+        }
+
+        .profile-left {
+            width: 30%;
+            text-align: center;
+        }
+        .profile-left img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid #f1f1f1;
+            margin-bottom: 20px;
+        }
+        .profile-left h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .profile-left p {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+        .profile-left .edit-btn {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .profile-left .edit-btn:hover {
+            background-color: #0056b3;
+        }
+        .profile-right {
+            width: 65%;
+        }
+        .profile-right h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .profile-right .info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #555;
+        }
+        .profile-right .info span {
+            font-weight: bold;
+            color: #333;
+        }
+        .profile-right input {
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            font-size: 14px;
+        }
+        .activity {
+            margin-top: 30px;
+        }
+        .activity h4 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .activity-item .desc {
+            font-size: 14px;
+            color: #555;
+        }
+        .activity-item .date {
+            font-size: 12px;
+            color: #777;
+        }
+        .save-btn, .cancel-btn {
+            padding: 8px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .cancel-btn {
+            background-color: #dc3545;
+        }
+        .save-btn:hover {
+            background-color: #218838;
+        }
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+        .change-password-btn {
+            padding: 8px 20px;
+            background-color: #ffc107;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .change-password-btn:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+
+<body onload="loadProfile()">
+<div layout:fragment="content" class="body-wrapper">
+    <div class="breadcrumb">
+        <div class="container">
+            <ul class="list-unstyled d-flex align-items-center m-0">
+                <li><a href="https://spreethemesprevious.github.io/">Trang chủ</a></li>
+                <li>
+                    <svg class="icon icon-breadcrumb" width="64" height="64" viewBox="0 0 64 64" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <g opacity="0.4">
+                            <path
+                                    d="M25.9375 8.5625L23.0625 11.4375L43.625 32L23.0625 52.5625L25.9375 55.4375L47.9375 33.4375L49.3125 32L47.9375 30.5625L25.9375 8.5625Z"
+                                    fill="#000" />
+                        </g>
+                    </svg>
+                </li>
+                <li>Trang cá nhân</li>
+            </ul>
+        </div>
+    </div>
+    <main id="MainContent" class="content-for-layout">
+        <div class="container d-flex mt-5">
+            <!-- Profile Left -->
+            <div class="profile-left">
+                <img src="https://png.pngtree.com/png-vector/20190710/ourmid/pngtree-user-vector-avatar-png-image_1541962.jpg" alt="User Profile Picture">
+                <h2 id="username" th:text="${user.hoTen}"></h2>
+<!--                <p id="joinDate">Thành viên từ tháng 3, 2020</p>-->
+                <button class="edit-btn" id="editBtn" onclick="editProfile()">Chỉnh sửa</button>
+            </div>
+
+            <!-- Profile Right -->
+            <div class="profile-right">
+                <h3>Thông tin cá nhân</h3>
+                <div class="info">
+                    <span>Email:</span>
+                    <span id="userEmail" th:text="${user.email}"></span>
+                </div>
+                <div class="info">
+                    <span>Số điện thoại:</span>
+                    <span id="userPhone" th:text="${user.soDienThoai == null ? '' : user.soDienThoai}"></span>
+                </div>
+                <div class="info">
+                    <span>Ngày sinh:</span>
+                    <span id="userDate" th:text="${user.ngaySinh == null ? '' : user.ngaySinh}"></span>
+                </div>
+                <div class="info">
+                    <span>Giới tính:</span>
+                    <span id="userGender" th:text="${user.gioiTinh == null ? '' : user.gioiTinh}"></span>
+                </div>
+                <div class="info">
+                    <span>Địa chỉ:</span>
+                    <span id="userAddress" th:text="${(user.diaChi.equals('') ? '' : user.diaChi + ', ') + (user.huyen.equals('') ? '' : user.huyen + ', ') + (user.xa.equals('') ? '' : user.xa + ', ') + (user.thanhPho.equals('') ? '' : user.thanhPho)}"></span>
+                </div>
+
+<!--                <div class="activity">-->
+<!--                    <h4>Hoạt động gần đây</h4>-->
+<!--                    <div class="activity-item">-->
+<!--                        <div class="desc">Đã đăng một bài viết mới</div>-->
+<!--                        <div class="date">12/12/2024</div>-->
+<!--                    </div>-->
+<!--                    <div class="activity-item">-->
+<!--                        <div class="desc">Đã thay đổi mật khẩu</div>-->
+<!--                        <div class="date">10/12/2024</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <!-- Chỉnh sửa thông tin -->
+                <div id="editForm" style="display:none;">
+                    <h3>Chỉnh sửa thông tin cá nhân</h3>
+                    <div class="info">
+                        <input type="hidden" id="id" th:value="${user.id}">
+                        <span>Họ tên:</span>
+                        <input type="email" id="editName" th:value="${user.hoTen}">
+                    </div>
+                    <div class="info">
+                        <span>Email:</span>
+                        <input type="email" id="editEmail" th:value="${user.email}">
+                    </div>
+                    <div class="info">
+                        <span>Số điện thoại:</span>
+                        <input type="text" id="editPhone" th:value="${user.soDienThoai == null ? '' : user.soDienThoai}">
+                    </div>
+                    <div class="info">
+                        <div class="col-8 d-flex justify-content-between">
+                            <span>Ngày sinh:</span>
+                            <input style="width: 67%;" id="editDate" class="me-3" th:value="${user.ngaySinh == null ? '' : user.ngaySinh}" type="date">
+                        </div>
+                        <div class="col-4" th:if="${user.gioiTinh == null}">
+                            <span>Giới tính:</span>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" style="height: 16px;width: 16px;padding: 0 0;" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Nam" checked>
+                                <label class="form-check-label" for="inlineRadio1">Nam</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" style="height: 16px;width: 16px;padding: 0 0;" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Nữ">
+                                <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                            </div>
+                        </div>
+                        <div class="col-4" th:if="${user.gioiTinh != null}">
+                            <span>Giới tính:</span>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" th:checked="${user.gioiTinh == 'Nam'}" style="height: 16px;width: 16px;padding: 0 0;" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Nam" checked>
+                                <label class="form-check-label" for="inlineRadio1">Nam</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" th:checked="${user.gioiTinh == 'Nữ'}" style="height: 16px;width: 16px;padding: 0 0;" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Nữ">
+                                <label class="form-check-label" for="inlineRadio2">Nữ</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <fieldset>
+                                <label class="label">Tỉnh/Thành phố</label>
+                                <select id="province" onchange="loadDistricts('','')" name="thanhPho" class="form-select">
+                                    <option value="">Chọn</option>
+                                </select>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <fieldset>
+                                <label class="label">Quận/Huyện</label>
+                                <select id="district" onchange="loadWards('')" name="huyen" class="form-select">
+                                    <option value="">Chọn</option>
+                                </select>
+                            </fieldset>
+                        </div>
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <fieldset>
+                                <label class="label">Xã</label>
+                                <select id="ward" name="xa" class="form-select">
+                                    <option value="">Chọn</option>
+                                </select>
+                            </fieldset>
+                        </div>
+                        <input type="hidden" th:value="${user.thanhPho}" id="provinceName" name="1">
+                        <input type="hidden" th:value="${user.huyen}" id="districtName" name="2">
+                        <input type="hidden" th:value="${user.xa}" id="wardName" name="3">
+                    </div>
+                    <div class="info">
+                        <span>Địa chỉ chi tiết:</span>
+                        <input type="text" id="editAddress" th:value="${user.diaChi}">
+                    </div>
+                    <button class="save-btn" onclick="saveChanges()">Lưu thay đổi</button>
+                    <button class="cancel-btn" onclick="cancelEdit()">Hủy</button>
+                </div>
+
+                <!-- Đổi mật khẩu -->
+                <div id="changePasswordForm" style="display:none;">
+                    <h3>Đổi mật khẩu</h3>
+                    <div class="info">
+                        <span>Mật khẩu cũ:</span>
+                        <input type="password" id="oldPassword">
+                    </div>
+                    <div class="info">
+                        <span>Mật khẩu mới:</span>
+                        <input type="password" id="newPassword">
+                    </div>
+                    <div class="info">
+                        <span>Nhập lại mật khẩu mới:</span>
+                        <input type="password" id="confirmPassword">
+                    </div>
+                    <button class="save-btn" onclick="changePassword()">Lưu thay đổi</button>
+                    <button class="cancel-btn" onclick="cancelPasswordChange()">Hủy</button>
+                </div>
+
+                <!-- Nút đổi mật khẩu -->
+                <button class="change-password-btn" onclick="showChangePasswordForm()">Đổi mật khẩu</button>
+            </div>
+        </div>
+    </main>
+    <script src="/static/src/js/profile.js"></script>
+</div>
+</body>
+
+
+<!-- Mirrored from spreethemesprevious.github.io/bisum/html/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 05 Nov 2024 09:31:48 GMT -->
+</html>

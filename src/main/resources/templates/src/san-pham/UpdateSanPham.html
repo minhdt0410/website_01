@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"></head>
+<body>
+<div class="container-scroller">
+    <!-- Navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}"></div>
+
+    <div class="container-fluid page-body-wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <form th:action="@{/san-pham/updateData}" method="post" onsubmit="return validateForm()" id="myForm">
+                    <input type="hidden" th:value="${SP.id}" name="id">
+                    <h4>Thông tin sản phẩm</h4>
+                    <hr>
+                    <br>
+                    <div class="row">
+                        <!-- Phần thông tin bên trái -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <div class="mb-3">
+                                    <label for="ma" class="form-label">Mã sản phẩm</label>
+                                    <input type="text" id="ma" th:value="${SP.ma_sanpham}" name="ma_sanpham" class="form-control" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tensanpham" class="form-label">Tên sản phẩm</label>
+                                    <input type="text" id="tensanpham" th:value="${SP.tensanpham}" name="tensanpham" class="form-control" required>
+                                </div>
+<!--                                <div class="mb-3">-->
+<!--                                    <label for="url_anh" class="form-label">URL ảnh</label>-->
+<!--                                    <input type="text" id="url_anh" name="url_anh" class="form-control" required readonly>-->
+<!--                                    <button type="button" class="btn btn-info mt-2" onclick="openFileDialog()">Chọn ảnh</button>-->
+<!--                                </div>-->
+<!--                                <div class="mb-3">-->
+<!--                                    <img id="preview" src="#" alt="Ảnh sản phẩm" style="display:none; max-width: 200px; max-height: 200px;"/>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+
+                        <!-- Phần thông tin bên phải -->
+                        <div class="col-md-6">
+                            <div class="rounded-box">
+                                <div class="mb-3">
+                                    <label for="thuonghieu" class="form-label">Thương hiệu</label>
+                                    <select id="thuonghieu" name="thuongHieu.id" class="form-select" required>
+                                        <option th:each="th : ${thuongHieus}" th:value="${th.id}" th:text="${th.tenThuongHieu}" th:selected="${th.id == SP.thuongHieu.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loaiDe" class="form-label">Loại đế</label>
+                                    <select id="loaiDe" name="loaiDe" class="form-control" required>
+                                        <option th:each="ld : ${listLD}" th:value="${ld.id}" th:text="${ld.tenloaide}" th:selected="${ld.id == SP.loaiDe.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="chatLieu" class="form-label">Chất liệu</label>
+                                    <select id="chatLieu" name="chatLieu" class="form-control" required>
+                                        <option th:each="cl : ${listCL}" th:value="${cl.id}" th:text="${cl.tenchatlieu}" th:selected="${cl.id == SP.chatLieu.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" onclick="submitForm(event)">Lưu</button>
+                    <a href="/admin/san-pham" class="btn btn-secondary">Hủy</a>
+                </form>
+            </div>
+            <!-- Footer -->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+        </div>
+    </div>
+</div>
+<!-- Script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+<script>
+    function openFileDialog() {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('preview').style.display = 'block';
+                    document.getElementById('url_anh').value = e.target.result; // Lưu URL vào input
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        fileInput.click();
+    }
+    function validateForm() {
+        var tenSanPham = document.getElementById("tensanpham").value.trim();
+        if (tenSanPham === "") {
+            alert("Tên sản phẩm không thể để trống hoặc chỉ chứa khoảng trắng.");
+            return false; // Ngừng gửi form
+        }
+        return true; // Cho phép gửi form
+    }
+
+    function submitForm(e){
+        e.preventDefault();
+        Swal.fire({
+            title: 'Xác nhận sửa sản phẩm',
+            html: 'Bạn có chắc chắn muốn sửa sản phẩm không?',
+            icon: 'warning',
+            showCancelButton: true,       // Hiển thị nút "Hủy"
+            confirmButtonText: 'Xác nhận', // Nút xác nhận đăng xuất
+            cancelButtonText: 'Hủy'        // Nút hủy
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("myForm").submit();
+            }
+        });
+    }
+</script>
+</body>
+</html>
+

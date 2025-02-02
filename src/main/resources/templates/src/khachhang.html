@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{src/partials/_head :: _head}"></head>
+<body>
+<div class="container-scroller">
+    <!--_navbar -->
+    <div th:replace="~{src/partials/_navbar :: _navbar}">
+    </div>
+    <!-- _navbar -->
+    <div class="container-fluid page-body-wrapper">
+        <!--_sidebar-->
+        <div th:replace="~{src/partials/_sidebar :: _sidebar}"></div>
+        <!--_sidebar-->
+        <div class="main-panel">z
+            <!-- header : phần này là ghi code listAll-->
+            <div class="content-wrapper">
+                <div> mạnh nek</div>
+            </div>
+            <!-- header-->
+            <!--footer-->
+            <div th:replace="~{src/partials/_footer :: _footer}"></div>
+            <!--footer-->
+        </div>
+    </div>
+</div>
+<!--script -->
+<div th:replace="~{src/partials/_script :: _script}"></div>
+</body>
+</html>
